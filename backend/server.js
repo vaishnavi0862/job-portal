@@ -18,6 +18,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+app.use(express.static(__dirname + '/..'));
 
 // Database connection pool
 const db = mysql.createPool({
