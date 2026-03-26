@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobPortal - Find Your Dream Job in India</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-briefcase"></i>
+                    <span>JobPortal India</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="register-btn">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Find Your <span class="highlight">Dream Job</span> in India</h1>
+            <p>Discover thousands of job opportunities with top Indian companies</p>
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchJob" placeholder="Job title, keywords, or company">
+                </div>
+                <div class="search-box">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" id="searchLocation" placeholder="City (Mumbai, Delhi, Bangalore, etc.)">
+                </div>
+                <button onclick="searchJobs()" class="search-btn">
+                    <i class="fas fa-search"></i> Search Jobs
+                </button>
+            </div>
+            <div class="popular-tags">
+                <span>Popular:</span>
+                <a href="#" onclick="searchWithTag('remote')">Remote</a>
+                <a href="#" onclick="searchWithTag('developer')">Developer</a>
+                <a href="#" onclick="searchWithTag('designer')">Designer</a>
+                <a href="#" onclick="searchWithTag('marketing')">Marketing</a>
+                <a href="#" onclick="searchWithTag('bangalore')">Bangalore</a>
+                <a href="#" onclick="searchWithTag('mumbai')">Mumbai</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <h3>10,000+</h3>
+                <p>Active Jobs</p>
+            </div>
+            <div class="stat-item">
+                <h3>2,000+</h3>
+                <p>Companies</p>
+            </div>
+            <div class="stat-item">
+                <h3>50,000+</h3>
+                <p>Job Seekers</p>
+            </div>
+            <div class="stat-item">
+                <h3>5,000+</h3>
+                <p>Hired Monthly</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-jobs">
+        <div class="section-header">
+            <h2>Featured Jobs in India</h2>
+            <p>Explore the latest opportunities across India</p>
+        </div>
+        <div class="jobs-grid" id="jobsGrid"></div>
+        <div class="view-all">
+            <a href="jobs.html" class="view-all-btn">View All Jobs <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="section-header">
+            <h2>Popular Categories</h2>
+            <p>Browse jobs by category</p>
+        </div>
+        <div class="categories-grid">
+            <div class="category-card" onclick="searchByCategory('Technology')">
+                <i class="fas fa-code"></i>
+                <h3>Technology</h3>
+                <p>2,500+ jobs</p>
+            </div>
+            <div class="category-card" onclick="searchByCategory('Design')">
+                <i class="fas fa-palette"></i>
+                <h3>Design</h3>
+                <p>1,200+ jobs</p>
+            </div>
+            <div class="category-card" onclick="searchByCategory('Marketing')">
+                <i class="fas fa-chart-line"></i>
+                <h3>Marketing</h3>
+                <p>800+ jobs</p>
+            </div>
+            <div class="category-card" onclick="searchByCategory('Sales')">
+                <i class="fas fa-chart-simple"></i>
+                <h3>Sales</h3>
+                <p>1,000+ jobs</p>
+            </div>
+            <div class="category-card" onclick="searchByCategory('Finance')">
+                <i class="fas fa-chart-line"></i>
+                <h3>Finance</h3>
+                <p>600+ jobs</p>
+            </div>
+            <div class="category-card" onclick="searchByCategory('Customer Service')">
+                <i class="fas fa-headset"></i>
+                <h3>Customer Service</h3>
+                <p>900+ jobs</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-briefcase"></i> JobPortal India</h3>
+                <p>Find your dream job in India with us. We connect talented professionals with great companies.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+            <div class="footer-section">
+                <h4>For Job Seekers</h4>
+                <a href="#">How to Apply</a>
+                <a href="#">Resume Tips</a>
+                <a href="#">Career Advice</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p><i class="fas fa-envelope"></i> support@jobportalindia.com</p>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 JobPortal India. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Featured jobs data with Indian locations and INR salaries
+        const featuredJobs = [
+            { 
+                id: 1, 
+                title: "Senior Frontend Developer", 
+                company: "Tech Mahindra", 
+                location: "Bangalore, Karnataka", 
+                salary: "₹12,00,000 - ₹18,00,000", 
+                type: "Full-time", 
+                logo: "🏢" 
+            },
+            { 
+                id: 2, 
+                title: "UI/UX Designer", 
+                company: "Infosys", 
+                location: "Pune, Maharashtra", 
+                salary: "₹8,00,000 - ₹12,00,000", 
+                type: "Remote", 
+                logo: "🎨" 
+            },
+            { 
+                id: 3, 
+                title: "Backend Engineer", 
+                company: "Wipro", 
+                location: "Hyderabad, Telangana", 
+                salary: "₹10,00,000 - ₹15,00,000", 
+                type: "Full-time", 
+                logo: "⚙️" 
+            },
+            { 
+                id: 4, 
+                title: "Product Manager", 
+                company: "Amazon India", 
+                location: "Bangalore, Karnataka", 
+                salary: "₹20,00,000 - ₹30,00,000", 
+                type: "Full-time", 
+                logo: "📱" 
+            },
+            { 
+                id: 5, 
+                title: "Marketing Specialist", 
+                company: "Flipkart", 
+                location: "Mumbai, Maharashtra", 
+                salary: "₹6,00,000 - ₹9,00,000", 
+                type: "Part-time", 
+                logo: "📊" 
+            },
+            { 
+                id: 6, 
+                title: "DevOps Engineer", 
+                company: "Google India", 
+                location: "Hyderabad, Telangana", 
+                salary: "₹18,00,000 - ₹25,00,000", 
+                type: "Remote", 
+                logo: "☁️" 
+            }
+        ];
+
+        // Load featured jobs (only first 3 for homepage)
+        function loadFeaturedJobs() {
+            const container = document.getElementById('jobsGrid');
+            if (!container) return;
+            
+            // Show only first 3 jobs on homepage
+            const displayJobs = featuredJobs.slice(0, 3);
+            
+            container.innerHTML = displayJobs.map(job => `
+                <div class="job-card">
+                    <div class="job-card-header">
+                        <div class="job-logo">${job.logo}</div>
+                        <div class="job-info">
+                            <h3>${job.title}</h3>
+                            <p class="company-name">${job.company}</p>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <span><i class="fas fa-map-marker-alt"></i> ${job.location}</span>
+                        <span><i class="fas fa-rupee-sign"></i> ${job.salary}</span>
+                        <span class="job-type">${job.type}</span>
+                    </div>
+                    <div class="job-actions">
+                        <button onclick="viewJob(${job.id})" class="view-btn">View Details</button>
+                        <button onclick="applyJob(${job.id})" class="apply-btn">Apply Now</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search function - redirects to jobs page with search params
+        function searchJobs() {
+            const jobTitle = document.getElementById('searchJob').value;
+            const location = document.getElementById('searchLocation').value;
+            
+            if (jobTitle || location) {
+                window.location.href = `jobs.html?search=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}`;
+            } else {
+                alert('Please enter a job title or location to search');
+            }
+        }
+
+        function searchWithTag(tag) {
+            window.location.href = `jobs.html?search=${encodeURIComponent(tag)}`;
+        }
+
+        function searchByCategory(category) {
+            window.location.href = `jobs.html?category=${category}`;
+        }
+
+        // View job details
+        function viewJob(jobId) {
+            const job = featuredJobs.find(j => j.id === jobId);
+            if (job) {
+                alert(`📋 JOB DETAILS\n\nTitle: ${job.title}\nCompany: ${job.company}\nLocation: ${job.location}\nSalary: ${job.salary}\nType: ${job.type}\n\nFor full details and to apply, please visit the Browse Jobs page.`);
+            }
+        }
+
+        // Apply for job
+        function applyJob(jobId) {
+            const user = localStorage.getItem('user');
+            
+            if (!user) {
+                alert('Please login to apply for jobs');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const job = featuredJobs.find(j => j.id === jobId);
+            
+            if (confirm(`Apply for ${job.title} at ${job.company}?\n\nLocation: ${job.location}\nSalary: ${job.salary}`)) {
+                const userData = JSON.parse(user);
+                const applications = JSON.parse(localStorage.getItem('applications') || '[]');
+                
+                // Check if already applied
+                const alreadyApplied = applications.find(app => 
+                    app.userEmail === userData.email && app.jobId === job.id
+                );
+                
+                if (alreadyApplied) {
+                    alert('You have already applied for this job!');
+                    return;
+                }
+                
+                applications.push({
+                    id: Date.now(),
+                    jobId: job.id,
+                    jobTitle: job.title,
+                    company: job.company,
+                    location: job.location,
+                    salary: job.salary,
+                    userEmail: userData.email,
+                    userName: userData.fullName,
+                    appliedAt: new Date().toISOString(),
+                    status: 'pending'
+                });
+                
+                localStorage.setItem('applications', JSON.stringify(applications));
+                alert('✅ Application submitted successfully!');
+            }
+        }
+
+        // Load jobs when page loads
+        loadFeaturedJobs();
+    </script>
+</body>
+</html>

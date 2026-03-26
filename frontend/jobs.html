@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Jobs - JobPortal India</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .jobs-page { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2rem; color: #333; margin-bottom: 0.5rem; }
+        .page-header p { color: #666; }
+        .filter-bar { background: white; padding: 1rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .filter-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+        .filter-select { padding: 0.5rem 1rem; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; }
+        .results-count { margin-bottom: 1rem; color: #666; padding: 0.5rem; background: #f5f5f5; border-radius: 8px; }
+        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
+        .job-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; }
+        .job-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .job-card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .job-logo { width: 50px; height: 50px; background: #f0f0f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .job-info h3 { font-size: 1.1rem; margin-bottom: 0.25rem; color: #333; }
+        .company-name { color: #666; font-size: 0.9rem; }
+        .job-details { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; font-size: 0.9rem; color: #666; }
+        .job-details span { display: flex; align-items: center; gap: 0.3rem; }
+        .job-type { background: #e0e7ff; color: #4F46E5; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; }
+        .job-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; }
+        .save-btn, .view-btn, .apply-btn { flex: 1; padding: 0.6rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; min-width: 80px; }
+        .save-btn { background: #fff3cd; color: #856404; }
+        .save-btn:hover { background: #ffe0a3; }
+        .save-btn.saved { background: #4CAF50; color: white; }
+        .view-btn { background: #f0f0f0; color: #666; }
+        .view-btn:hover { background: #e0e0e0; }
+        .apply-btn { background: #4F46E5; color: white; }
+        .apply-btn:hover { background: #4338CA; }
+        .apply-btn:disabled, .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .loading-spinner { text-align: center; padding: 3rem; color: #666; grid-column: 1 / -1; }
+        .loading-spinner i { font-size: 2rem; margin-bottom: 1rem; display: block; }
+        .empty-state { text-align: center; padding: 3rem; color: #666; grid-column: 1 / -1; }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; color: #ccc; }
+        .search-btn { background: #4F46E5; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer; }
+        .clear-btn { background: #6c757d; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer; }
+        .saved-badge { display: inline-block; background: #4CAF50; color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 20px; margin-left: 0.5rem; }
+        .error-message { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; }
+        @media (max-width: 768px) {
+            .jobs-page { padding: 0 1rem; }
+            .jobs-grid { grid-template-columns: 1fr; }
+            .filter-row { flex-direction: column; align-items: stretch; }
+            .filter-select { width: 100%; }
+            .job-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-briefcase"></i>
+                    <span>JobPortal India</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="jobs.html" class="active">Browse Jobs</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="register.html" class="register-btn">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="jobs-page">
+        <div class="page-header">
+            <h1>Browse Jobs in India</h1>
+            <p>Find your next career opportunity across India</p>
+        </div>
+        
+        <div class="filter-bar">
+            <div class="filter-row">
+                <select id="jobTypeFilter" class="filter-select">
+                    <option value="">All Job Types</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Internship">Internship</option>
+                </select>
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Design">Design</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Management">Management</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Customer Service">Customer Service</option>
+                </select>
+                <select id="locationFilter" class="filter-select">
+                    <option value="">All Locations</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Delhi">Delhi NCR</option>
+                    <option value="Remote">Remote</option>
+                </select>
+                <button onclick="applyFilters()" class="search-btn">Apply Filters</button>
+                <button onclick="clearFilters()" class="clear-btn">Clear</button>
+            </div>
+        </div>
+        
+        <div class="results-count" id="resultsCount"></div>
+        
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+        
+        <div class="jobs-grid" id="jobsGrid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                Loading jobs...
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-briefcase"></i> JobPortal India</h3>
+                <p>Find your dream job in India with us. We connect talented professionals with great companies.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="index.html">Home</a>
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+            <div class="footer-section">
+                <h4>For Job Seekers</h4>
+                <a href="#">How to Apply</a>
+                <a href="#">Resume Tips</a>
+                <a href="#">Career Advice</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p><i class="fas fa-envelope"></i> support@jobportalindia.com</p>
+                <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 JobPortal India. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let allJobs = [];
+        let savedJobs = new Set();
+        let isLoading = false;
+        
+        // Load jobs when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadJobs();
+            loadSavedJobs();
+            
+            // Check if coming from search on homepage
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search');
+            const locationTerm = urlParams.get('location');
+            const categoryTerm = urlParams.get('category');
+            
+            if (searchTerm || locationTerm || categoryTerm) {
+                setTimeout(() => {
+                    applyFiltersFromParams(searchTerm, locationTerm, categoryTerm);
+                }, 500);
+            }
+        });
+        
+        async function loadJobs() {
+            const container = document.getElementById('jobsGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (!container) return;
+            if (isLoading) return;
+            
+            isLoading = true;
+            errorDiv.style.display = 'none';
+            container.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading jobs...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/jobs`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const jobs = await response.json();
+                allJobs = jobs;
+                
+                if (!jobs || jobs.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>No jobs found. Check back later!</p></div>';
+                    resultsCount.textContent = '0 jobs found';
+                    isLoading = false;
+                    return;
+                }
+                
+                resultsCount.textContent = `${jobs.length} job${jobs.length !== 1 ? 's' : ''} found`;
+                displayJobs(jobs);
+                
+            } catch (error) {
+                console.error('Error loading jobs:', error);
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = `⚠️ Cannot connect to backend. Make sure backend is running at ${API_URL}<br><br><button onclick="loadJobs()" class="search-btn">Retry</button>`;
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Unable to load jobs. Please check backend connection.</p></div>';
+                resultsCount.textContent = '0 jobs found';
+            } finally {
+                isLoading = false;
+            }
+        }
+        
+        async function loadSavedJobs() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('Not logged in, skipping saved jobs load');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/jobs/saved`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const saved = await response.json();
+                    savedJobs.clear();
+                    saved.forEach(job => savedJobs.add(job.id));
+                    displayJobs(allJobs);
+                }
+            } catch (error) {
+                console.error('Error loading saved jobs:', error);
+            }
+        }
+        
+        function displayJobs(jobs) {
+            const container = document.getElementById('jobsGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            
+            if (!container) return;
+            
+            if (!jobs || jobs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>No jobs found matching your criteria</p></div>';
+                resultsCount.textContent = '0 jobs found';
+                return;
+            }
+            
+            resultsCount.textContent = `${jobs.length} job${jobs.length !== 1 ? 's' : ''} found`;
+            
+            container.innerHTML = jobs.map(job => {
+                const isSaved = savedJobs.has(job.id);
+                const showSaveButton = token && user && user.role === 'jobseeker';
+                
+                return `
+                <div class="job-card" data-job-id="${job.id}">
+                    <div class="job-card-header">
+                        <div class="job-logo">${getJobLogo(job.category)}</div>
+                        <div class="job-info">
+                            <h3>${escapeHtml(job.title)} ${isSaved ? '<span class="saved-badge">⭐ Saved</span>' : ''}</h3>
+                            <p class="company-name">${escapeHtml(job.company)}</p>
+                        </div>
+                    </div>
+                    <div class="job-details">
+                        <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(job.location)}</span>
+                        <span><i class="fas fa-rupee-sign"></i> ${escapeHtml(job.salary || 'Salary not specified')}</span>
+                        <span class="job-type">${escapeHtml(job.job_type)}</span>
+                    </div>
+                    <div class="job-actions">
+                        ${showSaveButton ? `<button onclick="saveJob(${job.id})" class="save-btn ${isSaved ? 'saved' : ''}" id="saveBtn-${job.id}">${isSaved ? '★ Saved' : '☆ Save'}</button>` : ''}
+                        <button onclick="viewJobDetails(${job.id})" class="view-btn">View Details</button>
+                        <button onclick="applyForJob(${job.id})" class="apply-btn">Apply Now</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+        
+        function getJobLogo(category) {
+            const logos = {
+                'Technology': '💻',
+                'Design': '🎨',
+                'Marketing': '📊',
+                'Sales': '📈',
+                'Management': '👔',
+                'Finance': '💰',
+                'Customer Service': '🎧'
+            };
+            return logos[category] || '🏢';
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        
+        async function saveJob(jobId) {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            
+            // Check if user is logged in
+            if (!token || !user) {
+                alert('Please login to save jobs');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Check if user is a job seeker
+            if (user.role !== 'jobseeker') {
+                alert('Only job seekers can save jobs');
+                return;
+            }
+            
+            const saveBtn = document.getElementById(`saveBtn-${jobId}`);
+            const isCurrentlySaved = savedJobs.has(jobId);
+            
+            if (saveBtn) {
+                saveBtn.textContent = isCurrentlySaved ? 'Removing...' : 'Saving...';
+                saveBtn.disabled = true;
+            }
+            
+            try {
+                let response;
+                
+                if (isCurrentlySaved) {
+                    // Unsave job
+                    response = await fetch(`${API_URL}/jobs/save/${jobId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                } else {
+                    // Save job
+                    response = await fetch(`${API_URL}/jobs/save`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ jobId })
+                    });
+                }
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Something went wrong');
+                }
+                
+                if (isCurrentlySaved) {
+                    savedJobs.delete(jobId);
+                    alert('✅ Job removed from saved!');
+                } else {
+                    savedJobs.add(jobId);
+                    alert('✅ Job saved to favorites!');
+                }
+                
+                // Refresh display to show updated save status
+                displayJobs(allJobs);
+                
+            } catch (error) {
+                console.error('Save job error:', error);
+                alert(`Error: ${error.message}`);
+                if (saveBtn) {
+                    saveBtn.textContent = isCurrentlySaved ? '★ Saved' : '☆ Save';
+                    saveBtn.disabled = false;
+                }
+            }
+        }
+        
+        function applyFilters() {
+            const jobType = document.getElementById('jobTypeFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+            const location = document.getElementById('locationFilter').value;
+            
+            let filtered = [...allJobs];
+            
+            if (jobType) {
+                filtered = filtered.filter(job => job.job_type === jobType);
+            }
+            
+            if (category) {
+                filtered = filtered.filter(job => job.category === category);
+            }
+            
+            if (location) {
+                filtered = filtered.filter(job => job.location.toLowerCase().includes(location.toLowerCase()));
+            }
+            
+            displayJobs(filtered);
+        }
+        
+        function applyFiltersFromParams(search, location, category) {
+            let filtered = [...allJobs];
+            
+            if (search && search !== 'null') {
+                filtered = filtered.filter(job => 
+                    job.title.toLowerCase().includes(search.toLowerCase()) ||
+                    job.company.toLowerCase().includes(search.toLowerCase())
+                );
+            }
+            
+            if (location && location !== 'null') {
+                filtered = filtered.filter(job => 
+                    job.location.toLowerCase().includes(location.toLowerCase())
+                );
+            }
+            
+            if (category && category !== 'null') {
+                filtered = filtered.filter(job => job.category === category);
+                const categoryFilter = document.getElementById('categoryFilter');
+                if (categoryFilter) categoryFilter.value = category;
+            }
+            
+            displayJobs(filtered);
+        }
+        
+        function clearFilters() {
+            document.getElementById('jobTypeFilter').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('locationFilter').value = '';
+            displayJobs(allJobs);
+        }
+        
+        function viewJobDetails(jobId) {
+            const job = allJobs.find(j => j.id === jobId);
+            if (job) {
+                alert(`📋 JOB DETAILS\n\n` +
+                    `Title: ${job.title}\n` +
+                    `Company: ${job.company}\n` +
+                    `Location: ${job.location}\n` +
+                    `Salary: ${job.salary || 'Not specified'}\n` +
+                    `Type: ${job.job_type}\n` +
+                    `Category: ${job.category}\n\n` +
+                    `Description:\n${job.description || 'No description available'}\n\n` +
+                    `Requirements:\n${job.requirements || 'No requirements listed'}`);
+            }
+        }
+        
+        async function applyForJob(jobId) {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            
+            if (!token || !user) {
+                alert('Please login to apply for jobs');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            if (user.role !== 'jobseeker') {
+                alert('Only job seekers can apply for jobs');
+                return;
+            }
+            
+            const job = allJobs.find(j => j.id === jobId);
+            if (!job) {
+                alert('Job not found');
+                return;
+            }
+            
+            if (confirm(`Apply for "${job.title}" at ${job.company}?\n\nLocation: ${job.location}\nSalary: ${job.salary || 'Not specified'}`)) {
+                const applyBtn = document.querySelector(`button[onclick="applyForJob(${jobId})"]`);
+                if (applyBtn) {
+                    applyBtn.textContent = 'Applying...';
+                    applyBtn.disabled = true;
+                }
+                
+                try {
+                    const response = await fetch(`${API_URL}/applications`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ jobId })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.message);
+                    }
+                    
+                    alert('✅ Application submitted successfully!');
+                    
+                } catch (error) {
+                    alert(`❌ Error: ${error.message}`);
+                } finally {
+                    if (applyBtn) {
+                        applyBtn.textContent = 'Apply Now';
+                        applyBtn.disabled = false;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

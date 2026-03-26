@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job - JobPortal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .post-job-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .post-job-container h1 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .post-job-container .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-group input:focus, 
+        .form-group textarea:focus, 
+        .form-group select:focus {
+            outline: none;
+            border-color: #4F46E5;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #4F46E5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #4338CA;
+        }
+        
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .alert {
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="index.html">
+                    <i class="fas fa-briefcase"></i>
+                    <span>JobPortal</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="jobs.html">Browse Jobs</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a id="logoutLink" style="cursor: pointer;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="post-job-container">
+        <h1><i class="fas fa-plus-circle"></i> Post a New Job</h1>
+        <p class="subtitle">Fill in the details to attract the best candidates</p>
+        
+        <div id="alertMessage"></div>
+        
+        <form id="postJobForm">
+            <div class="form-group">
+                <label>Job Title *</label>
+                <input type="text" id="title" required placeholder="e.g., Senior Frontend Developer">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Location *</label>
+                    <input type="text" id="location" required placeholder="e.g., New York, NY or Remote">
+                </div>
+                <div class="form-group">
+                    <label>Job Type *</label>
+                    <select id="jobType" required>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Internship">Internship</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Salary Range</label>
+                    <input type="text" id="salary" placeholder="e.g., $80,000 - $100,000">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="category">
+                        <option value="Technology">Technology</option>
+                        <option value="Design">Design</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Management">Management</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Job Description *</label>
+                <textarea id="description" required placeholder="Describe the role, responsibilities, and what makes this opportunity exciting..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Requirements *</label>
+                <textarea id="requirements" required placeholder="List the key qualifications and skills required (one per line)"></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">Post Job</button>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-briefcase"></i> JobPortal</h3>
+                <p>Find your dream job with us.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 JobPortal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is logged in and is a recruiter
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+        
+        if (user.role !== 'recruiter') {
+            alert('Only recruiters can post jobs');
+            window.location.href = 'dashboard.html';
+        }
+        
+        document.getElementById('postJobForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const alertDiv = document.getElementById('alertMessage');
+            
+            // Get all form values
+            const title = document.getElementById('title').value;
+            const location = document.getElementById('location').value;
+            const jobType = document.getElementById('jobType').value;
+            const salary = document.getElementById('salary').value;
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value;
+            const requirementsText = document.getElementById('requirements').value;
+            
+            // Validation
+            if (!title || !location || !description || !requirementsText) {
+                alertDiv.innerHTML = '<div class="alert alert-error">Please fill in all required fields (*)</div>';
+                return;
+            }
+            
+            // Create job object
+            const jobData = {
+                id: Date.now(),
+                title: title,
+                location: location,
+                type: jobType,
+                salary: salary,
+                category: category,
+                description: description,
+                requirements: requirementsText.split('\n').filter(r => r.trim()),
+                company: user.fullName || 'Your Company',
+                logo: '🏢',
+                recruiterEmail: user.email,
+                postedAt: new Date().toISOString(),
+                applications: 0
+            };
+            
+            // Show loading state
+            submitBtn.textContent = 'Posting job...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Save to localStorage
+                const recruiterJobs = JSON.parse(localStorage.getItem('recruiterJobs') || '[]');
+                recruiterJobs.push(jobData);
+                localStorage.setItem('recruiterJobs', JSON.stringify(recruiterJobs));
+                
+                // Also add to global jobs list
+                const allJobs = JSON.parse(localStorage.getItem('allJobs') || '[]');
+                allJobs.push(jobData);
+                localStorage.setItem('allJobs', JSON.stringify(allJobs));
+                
+                alertDiv.innerHTML = '<div class="alert alert-success">Job posted successfully! Redirecting to dashboard...</div>';
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }, 800);
+        });
+        
+        // Logout
+        document.getElementById('logoutLink').addEventListener('click', function() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
