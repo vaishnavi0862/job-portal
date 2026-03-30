@@ -15,6 +15,19 @@ A full-stack job portal with JWT authentication, role-based dashboards, job post
 
 - **Backend:** Node.js, Express.js, MySQL, JWT, bcryptjs
 - **Frontend:** HTML5, CSS3, JavaScript, Font Awesome
+## 📸 Screenshots
+
+| Home Page | Login Page |
+|-----------|------------|
+| ![Home](screenshots/1-home.png) | ![Login](screenshots/2-login.png) |
+
+| Browse Jobs | Profile Page |
+|-------------|--------------|
+| ![Browse Jobs](screenshots/3-browse-jobs.png) | ![Profile](screenshots/4-profile.png) |
+
+| Applied Jobs | Register Page |
+|--------------|---------------|
+| ![Applied Jobs](screenshots/5-applied-job.png) | ![Register](screenshots/6-register.png) |
 
 ## 🚀 Getting Started
 
